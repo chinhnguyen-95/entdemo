@@ -11,7 +11,7 @@ var (
 	// CarsColumns holds the columns for the "cars" table.
 	CarsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "model", Type: field.TypeEnum, Enums: []string{"TOYOTA", "HONDA", "BMW"}, Default: "TOYOTA"},
+		{Name: "model", Type: field.TypeEnum, Enums: []string{"TOYOTA", "HONDA"}, Default: "TOYOTA"},
 		{Name: "registered_at", Type: field.TypeTime},
 		{Name: "user_cars", Type: field.TypeInt, Nullable: true},
 	}

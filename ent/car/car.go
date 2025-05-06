@@ -69,7 +69,6 @@ const DefaultModel = ModelTOYOTA
 const (
 	ModelTOYOTA Model = "TOYOTA"
 	ModelHONDA  Model = "HONDA"
-	ModelBMW    Model = "BMW"
 )
 
 func (m Model) String() string {
@@ -79,7 +78,7 @@ func (m Model) String() string {
 // ModelValidator is a validator for the "model" field enum values. It is called by the builders before save.
 func ModelValidator(m Model) error {
 	switch m {
-	case ModelTOYOTA, ModelHONDA, ModelBMW:
+	case ModelTOYOTA, ModelHONDA:
 		return nil
 	default:
 		return fmt.Errorf("car: invalid enum value for model field: %q", m)
