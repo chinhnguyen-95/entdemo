@@ -5,10 +5,10 @@ on:
       - main
     paths:
       - .github/workflows/ci-atlas.yaml
-      - 'mysql/migrations/*'
+      - 'ent/migrate/migrations/*'
   pull_request:
     paths:
-      - 'mysql/migrations/*'
+      - 'ent/migrate/migrations/*'
 # Permissions to write comments on the pull request.
 permissions:
   contents: read
@@ -39,15 +39,15 @@ jobs:
           fetch-depth: 0
       - uses: ariga/setup-atlas@v0
         with:
-          cloud-token: ${{ secrets.ATLAS_CLOUD_TOKEN_5HVWFM }}
+          cloud-token: ${{ secrets.ATLAS_CLOUD_TOKEN_8C0I5S }}
       - uses: ariga/atlas-action/migrate/lint@v1
         with:
-          dir: 'file://mysql/migrations'
-          dir-name: 'test'
+          dir: 'file://ent/migrate/migrations'
+          dir-name: 'entdemo'
           dev-url: 'mysql://root:pass@localhost:3306/dev'
       - uses: ariga/atlas-action/migrate/push@v1
         if: github.ref == 'refs/heads/main'
         with:
-          dir: 'file://mysql/migrations'
-          dir-name: 'test'
+          dir: 'file://ent/migrate/migrations'
+          dir-name: 'entdemo'
           dev-url: 'mysql://root:pass@localhost:3306/dev'
