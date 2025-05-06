@@ -910,9 +910,6 @@ type UserMutation struct {
 	cars          map[int]struct{}
 	removedcars   map[int]struct{}
 	clearedcars   bool
-	groups        map[int]struct{}
-	removedgroups map[int]struct{}
-	clearedgroups bool
 	done          bool
 	oldValue      func(context.Context) (*User, error)
 	predicates    []predicate.User
@@ -1162,60 +1159,6 @@ func (m *UserMutation) ResetCars() {
 	m.removedcars = nil
 }
 
-// AddGroupIDs adds the "groups" edge to the Group entity by ids.
-func (m *UserMutation) AddGroupIDs(ids ...int) {
-	if m.groups == nil {
-		m.groups = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.groups[ids[i]] = struct{}{}
-	}
-}
-
-// ClearGroups clears the "groups" edge to the Group entity.
-func (m *UserMutation) ClearGroups() {
-	m.clearedgroups = true
-}
-
-// GroupsCleared reports if the "groups" edge to the Group entity was cleared.
-func (m *UserMutation) GroupsCleared() bool {
-	return m.clearedgroups
-}
-
-// RemoveGroupIDs removes the "groups" edge to the Group entity by IDs.
-func (m *UserMutation) RemoveGroupIDs(ids ...int) {
-	if m.removedgroups == nil {
-		m.removedgroups = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.groups, ids[i])
-		m.removedgroups[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedGroups returns the removed IDs of the "groups" edge to the Group entity.
-func (m *UserMutation) RemovedGroupsIDs() (ids []int) {
-	for id := range m.removedgroups {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// GroupsIDs returns the "groups" edge IDs in the mutation.
-func (m *UserMutation) GroupsIDs() (ids []int) {
-	for id := range m.groups {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetGroups resets all changes to the "groups" edge.
-func (m *UserMutation) ResetGroups() {
-	m.groups = nil
-	m.clearedgroups = false
-	m.removedgroups = nil
-}
-
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -1381,12 +1324,9 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.cars != nil {
 		edges = append(edges, user.EdgeCars)
-	}
-	if m.groups != nil {
-		edges = append(edges, user.EdgeGroups)
 	}
 	return edges
 }
@@ -1401,24 +1341,15 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeGroups:
-		ids := make([]ent.Value, 0, len(m.groups))
-		for id := range m.groups {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.removedcars != nil {
 		edges = append(edges, user.EdgeCars)
-	}
-	if m.removedgroups != nil {
-		edges = append(edges, user.EdgeGroups)
 	}
 	return edges
 }
@@ -1433,24 +1364,15 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeGroups:
-		ids := make([]ent.Value, 0, len(m.removedgroups))
-		for id := range m.removedgroups {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.clearedcars {
 		edges = append(edges, user.EdgeCars)
-	}
-	if m.clearedgroups {
-		edges = append(edges, user.EdgeGroups)
 	}
 	return edges
 }
@@ -1461,8 +1383,6 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 	switch name {
 	case user.EdgeCars:
 		return m.clearedcars
-	case user.EdgeGroups:
-		return m.clearedgroups
 	}
 	return false
 }
@@ -1481,9 +1401,6 @@ func (m *UserMutation) ResetEdge(name string) error {
 	switch name {
 	case user.EdgeCars:
 		m.ResetCars()
-		return nil
-	case user.EdgeGroups:
-		m.ResetGroups()
 		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)
