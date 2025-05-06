@@ -55,79 +55,29 @@ func IDLTE(id int) predicate.Car {
 	return predicate.Car(sql.FieldLTE(FieldID, id))
 }
 
-// Model applies equality check predicate on the "model" field. It's identical to ModelEQ.
-func Model(v string) predicate.Car {
-	return predicate.Car(sql.FieldEQ(FieldModel, v))
-}
-
 // RegisteredAt applies equality check predicate on the "registered_at" field. It's identical to RegisteredAtEQ.
 func RegisteredAt(v time.Time) predicate.Car {
 	return predicate.Car(sql.FieldEQ(FieldRegisteredAt, v))
 }
 
 // ModelEQ applies the EQ predicate on the "model" field.
-func ModelEQ(v string) predicate.Car {
+func ModelEQ(v Model) predicate.Car {
 	return predicate.Car(sql.FieldEQ(FieldModel, v))
 }
 
 // ModelNEQ applies the NEQ predicate on the "model" field.
-func ModelNEQ(v string) predicate.Car {
+func ModelNEQ(v Model) predicate.Car {
 	return predicate.Car(sql.FieldNEQ(FieldModel, v))
 }
 
 // ModelIn applies the In predicate on the "model" field.
-func ModelIn(vs ...string) predicate.Car {
+func ModelIn(vs ...Model) predicate.Car {
 	return predicate.Car(sql.FieldIn(FieldModel, vs...))
 }
 
 // ModelNotIn applies the NotIn predicate on the "model" field.
-func ModelNotIn(vs ...string) predicate.Car {
+func ModelNotIn(vs ...Model) predicate.Car {
 	return predicate.Car(sql.FieldNotIn(FieldModel, vs...))
-}
-
-// ModelGT applies the GT predicate on the "model" field.
-func ModelGT(v string) predicate.Car {
-	return predicate.Car(sql.FieldGT(FieldModel, v))
-}
-
-// ModelGTE applies the GTE predicate on the "model" field.
-func ModelGTE(v string) predicate.Car {
-	return predicate.Car(sql.FieldGTE(FieldModel, v))
-}
-
-// ModelLT applies the LT predicate on the "model" field.
-func ModelLT(v string) predicate.Car {
-	return predicate.Car(sql.FieldLT(FieldModel, v))
-}
-
-// ModelLTE applies the LTE predicate on the "model" field.
-func ModelLTE(v string) predicate.Car {
-	return predicate.Car(sql.FieldLTE(FieldModel, v))
-}
-
-// ModelContains applies the Contains predicate on the "model" field.
-func ModelContains(v string) predicate.Car {
-	return predicate.Car(sql.FieldContains(FieldModel, v))
-}
-
-// ModelHasPrefix applies the HasPrefix predicate on the "model" field.
-func ModelHasPrefix(v string) predicate.Car {
-	return predicate.Car(sql.FieldHasPrefix(FieldModel, v))
-}
-
-// ModelHasSuffix applies the HasSuffix predicate on the "model" field.
-func ModelHasSuffix(v string) predicate.Car {
-	return predicate.Car(sql.FieldHasSuffix(FieldModel, v))
-}
-
-// ModelEqualFold applies the EqualFold predicate on the "model" field.
-func ModelEqualFold(v string) predicate.Car {
-	return predicate.Car(sql.FieldEqualFold(FieldModel, v))
-}
-
-// ModelContainsFold applies the ContainsFold predicate on the "model" field.
-func ModelContainsFold(v string) predicate.Car {
-	return predicate.Car(sql.FieldContainsFold(FieldModel, v))
 }
 
 // RegisteredAtEQ applies the EQ predicate on the "registered_at" field.

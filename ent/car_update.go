@@ -30,15 +30,15 @@ func (cu *CarUpdate) Where(ps ...predicate.Car) *CarUpdate {
 }
 
 // SetModel sets the "model" field.
-func (cu *CarUpdate) SetModel(s string) *CarUpdate {
-	cu.mutation.SetModel(s)
+func (cu *CarUpdate) SetModel(c car.Model) *CarUpdate {
+	cu.mutation.SetModel(c)
 	return cu
 }
 
 // SetNillableModel sets the "model" field if the given value is not nil.
-func (cu *CarUpdate) SetNillableModel(s *string) *CarUpdate {
-	if s != nil {
-		cu.SetModel(*s)
+func (cu *CarUpdate) SetNillableModel(c *car.Model) *CarUpdate {
+	if c != nil {
+		cu.SetModel(*c)
 	}
 	return cu
 }
@@ -114,7 +114,20 @@ func (cu *CarUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (cu *CarUpdate) check() error {
+	if v, ok := cu.mutation.Model(); ok {
+		if err := car.ModelValidator(v); err != nil {
+			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "Car.model": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := cu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(car.Table, car.Columns, sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt))
 	if ps := cu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -124,7 +137,7 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := cu.mutation.Model(); ok {
-		_spec.SetField(car.FieldModel, field.TypeString, value)
+		_spec.SetField(car.FieldModel, field.TypeEnum, value)
 	}
 	if value, ok := cu.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
@@ -179,15 +192,15 @@ type CarUpdateOne struct {
 }
 
 // SetModel sets the "model" field.
-func (cuo *CarUpdateOne) SetModel(s string) *CarUpdateOne {
-	cuo.mutation.SetModel(s)
+func (cuo *CarUpdateOne) SetModel(c car.Model) *CarUpdateOne {
+	cuo.mutation.SetModel(c)
 	return cuo
 }
 
 // SetNillableModel sets the "model" field if the given value is not nil.
-func (cuo *CarUpdateOne) SetNillableModel(s *string) *CarUpdateOne {
-	if s != nil {
-		cuo.SetModel(*s)
+func (cuo *CarUpdateOne) SetNillableModel(c *car.Model) *CarUpdateOne {
+	if c != nil {
+		cuo.SetModel(*c)
 	}
 	return cuo
 }
@@ -276,7 +289,20 @@ func (cuo *CarUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (cuo *CarUpdateOne) check() error {
+	if v, ok := cuo.mutation.Model(); ok {
+		if err := car.ModelValidator(v); err != nil {
+			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "Car.model": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
+	if err := cuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(car.Table, car.Columns, sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt))
 	id, ok := cuo.mutation.ID()
 	if !ok {
@@ -303,7 +329,7 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 		}
 	}
 	if value, ok := cuo.mutation.Model(); ok {
-		_spec.SetField(car.FieldModel, field.TypeString, value)
+		_spec.SetField(car.FieldModel, field.TypeEnum, value)
 	}
 	if value, ok := cuo.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)

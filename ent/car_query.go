@@ -299,7 +299,7 @@ func (cq *CarQuery) WithOwner(opts ...func(*UserQuery)) *CarQuery {
 // Example:
 //
 //	var v []struct {
-//		Model string `json:"model,omitempty"`
+//		Model car.Model `json:"model,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -322,7 +322,7 @@ func (cq *CarQuery) GroupBy(field string, fields ...string) *CarGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Model string `json:"model,omitempty"`
+//		Model car.Model `json:"model,omitempty"`
 //	}
 //
 //	client.Car.Query().

@@ -22,8 +22,16 @@ type CarCreate struct {
 }
 
 // SetModel sets the "model" field.
-func (cc *CarCreate) SetModel(s string) *CarCreate {
-	cc.mutation.SetModel(s)
+func (cc *CarCreate) SetModel(c car.Model) *CarCreate {
+	cc.mutation.SetModel(c)
+	return cc
+}
+
+// SetNillableModel sets the "model" field if the given value is not nil.
+func (cc *CarCreate) SetNillableModel(c *car.Model) *CarCreate {
+	if c != nil {
+		cc.SetModel(*c)
+	}
 	return cc
 }
 
@@ -59,6 +67,7 @@ func (cc *CarCreate) Mutation() *CarMutation {
 
 // Save creates the Car in the database.
 func (cc *CarCreate) Save(ctx context.Context) (*Car, error) {
+	cc.defaults()
 	return withHooks(ctx, cc.sqlSave, cc.mutation, cc.hooks)
 }
 
@@ -84,10 +93,23 @@ func (cc *CarCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (cc *CarCreate) defaults() {
+	if _, ok := cc.mutation.Model(); !ok {
+		v := car.DefaultModel
+		cc.mutation.SetModel(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (cc *CarCreate) check() error {
 	if _, ok := cc.mutation.Model(); !ok {
 		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "Car.model"`)}
+	}
+	if v, ok := cc.mutation.Model(); ok {
+		if err := car.ModelValidator(v); err != nil {
+			return &ValidationError{Name: "model", err: fmt.Errorf(`ent: validator failed for field "Car.model": %w`, err)}
+		}
 	}
 	if _, ok := cc.mutation.RegisteredAt(); !ok {
 		return &ValidationError{Name: "registered_at", err: errors.New(`ent: missing required field "Car.registered_at"`)}
@@ -119,7 +141,7 @@ func (cc *CarCreate) createSpec() (*Car, *sqlgraph.CreateSpec) {
 		_spec = sqlgraph.NewCreateSpec(car.Table, sqlgraph.NewFieldSpec(car.FieldID, field.TypeInt))
 	)
 	if value, ok := cc.mutation.Model(); ok {
-		_spec.SetField(car.FieldModel, field.TypeString, value)
+		_spec.SetField(car.FieldModel, field.TypeEnum, value)
 		_node.Model = value
 	}
 	if value, ok := cc.mutation.RegisteredAt(); ok {
@@ -164,6 +186,7 @@ func (ccb *CarCreateBulk) Save(ctx context.Context) ([]*Car, error) {
 	for i := range ccb.builders {
 		func(i int, root context.Context) {
 			builder := ccb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CarMutation)
 				if !ok {
