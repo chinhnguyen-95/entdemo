@@ -2,6 +2,8 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -30,5 +32,13 @@ func (User) Edges() []ent.Edge {
 		// explicitly using the `Ref` method.
 		edge.From("groups", Group.Type).
 			Ref("users"),
+	}
+}
+
+func (User) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{
+			Check: "age >= 18",
+		},
 	}
 }

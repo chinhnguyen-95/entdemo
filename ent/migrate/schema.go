@@ -3,6 +3,7 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
@@ -88,6 +89,9 @@ var (
 
 func init() {
 	CarsTable.ForeignKeys[0].RefTable = UsersTable
+	UsersTable.Annotation = &entsql.Annotation{
+		Check: "age >= 18",
+	}
 	GroupUsersTable.ForeignKeys[0].RefTable = GroupsTable
 	GroupUsersTable.ForeignKeys[1].RefTable = UsersTable
 }
