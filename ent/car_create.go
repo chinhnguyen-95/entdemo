@@ -8,7 +8,6 @@ import (
 	"entdemo/ent/user"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -24,12 +23,6 @@ type CarCreate struct {
 // SetModel sets the "model" field.
 func (cc *CarCreate) SetModel(s string) *CarCreate {
 	cc.mutation.SetModel(s)
-	return cc
-}
-
-// SetRegisteredAt sets the "registered_at" field.
-func (cc *CarCreate) SetRegisteredAt(t time.Time) *CarCreate {
-	cc.mutation.SetRegisteredAt(t)
 	return cc
 }
 
@@ -89,9 +82,6 @@ func (cc *CarCreate) check() error {
 	if _, ok := cc.mutation.Model(); !ok {
 		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "Car.model"`)}
 	}
-	if _, ok := cc.mutation.RegisteredAt(); !ok {
-		return &ValidationError{Name: "registered_at", err: errors.New(`ent: missing required field "Car.registered_at"`)}
-	}
 	return nil
 }
 
@@ -121,10 +111,6 @@ func (cc *CarCreate) createSpec() (*Car, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 		_node.Model = value
-	}
-	if value, ok := cc.mutation.RegisteredAt(); ok {
-		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
-		_node.RegisteredAt = value
 	}
 	if nodes := cc.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

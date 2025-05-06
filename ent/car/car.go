@@ -14,8 +14,6 @@ const (
 	FieldID = "id"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
-	// FieldRegisteredAt holds the string denoting the registered_at field in the database.
-	FieldRegisteredAt = "registered_at"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
 	EdgeOwner = "owner"
 	// Table holds the table name of the car in the database.
@@ -33,7 +31,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldModel,
-	FieldRegisteredAt,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "cars"
@@ -68,11 +65,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByModel orders the results by the model field.
 func ByModel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModel, opts...).ToFunc()
-}
-
-// ByRegisteredAt orders the results by the registered_at field.
-func ByRegisteredAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRegisteredAt, opts...).ToFunc()
 }
 
 // ByOwnerField orders the results by owner field.

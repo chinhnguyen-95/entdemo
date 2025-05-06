@@ -9,7 +9,6 @@ import (
 	"entdemo/ent/user"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -39,20 +38,6 @@ func (cu *CarUpdate) SetModel(s string) *CarUpdate {
 func (cu *CarUpdate) SetNillableModel(s *string) *CarUpdate {
 	if s != nil {
 		cu.SetModel(*s)
-	}
-	return cu
-}
-
-// SetRegisteredAt sets the "registered_at" field.
-func (cu *CarUpdate) SetRegisteredAt(t time.Time) *CarUpdate {
-	cu.mutation.SetRegisteredAt(t)
-	return cu
-}
-
-// SetNillableRegisteredAt sets the "registered_at" field if the given value is not nil.
-func (cu *CarUpdate) SetNillableRegisteredAt(t *time.Time) *CarUpdate {
-	if t != nil {
-		cu.SetRegisteredAt(*t)
 	}
 	return cu
 }
@@ -126,9 +111,6 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.RegisteredAt(); ok {
-		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
-	}
 	if cu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -188,20 +170,6 @@ func (cuo *CarUpdateOne) SetModel(s string) *CarUpdateOne {
 func (cuo *CarUpdateOne) SetNillableModel(s *string) *CarUpdateOne {
 	if s != nil {
 		cuo.SetModel(*s)
-	}
-	return cuo
-}
-
-// SetRegisteredAt sets the "registered_at" field.
-func (cuo *CarUpdateOne) SetRegisteredAt(t time.Time) *CarUpdateOne {
-	cuo.mutation.SetRegisteredAt(t)
-	return cuo
-}
-
-// SetNillableRegisteredAt sets the "registered_at" field if the given value is not nil.
-func (cuo *CarUpdateOne) SetNillableRegisteredAt(t *time.Time) *CarUpdateOne {
-	if t != nil {
-		cuo.SetRegisteredAt(*t)
 	}
 	return cuo
 }
@@ -304,9 +272,6 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 	}
 	if value, ok := cuo.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
-	}
-	if value, ok := cuo.mutation.RegisteredAt(); ok {
-		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
 	}
 	if cuo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
