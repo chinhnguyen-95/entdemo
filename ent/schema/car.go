@@ -15,7 +15,7 @@ type Car struct {
 func (Car) Fields() []ent.Field {
 	return []ent.Field{
 		field.Enum("model").
-			Values("TOYOTA", "HONDA").
+			Values("HONDA", "TOYOTA").
 			Default("TOYOTA"),
 		field.Time("registered_at"),
 	}
