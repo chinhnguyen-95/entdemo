@@ -12,7 +12,6 @@ var (
 	CarsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "model", Type: field.TypeString},
-		{Name: "registered_at", Type: field.TypeTime},
 		{Name: "user_cars", Type: field.TypeInt, Nullable: true},
 	}
 	// CarsTable holds the schema information for the "cars" table.
@@ -23,7 +22,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "cars_users_cars",
-				Columns:    []*schema.Column{CarsColumns[3]},
+				Columns:    []*schema.Column{CarsColumns[2]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

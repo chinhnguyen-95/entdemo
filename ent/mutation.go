@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -38,7 +37,6 @@ type CarMutation struct {
 	typ           string
 	id            *int
 	model         *string
-	registered_at *time.Time
 	clearedFields map[string]struct{}
 	owner         *int
 	clearedowner  bool
@@ -181,42 +179,6 @@ func (m *CarMutation) ResetModel() {
 	m.model = nil
 }
 
-// SetRegisteredAt sets the "registered_at" field.
-func (m *CarMutation) SetRegisteredAt(t time.Time) {
-	m.registered_at = &t
-}
-
-// RegisteredAt returns the value of the "registered_at" field in the mutation.
-func (m *CarMutation) RegisteredAt() (r time.Time, exists bool) {
-	v := m.registered_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRegisteredAt returns the old "registered_at" field's value of the Car entity.
-// If the Car object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CarMutation) OldRegisteredAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRegisteredAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRegisteredAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRegisteredAt: %w", err)
-	}
-	return oldValue.RegisteredAt, nil
-}
-
-// ResetRegisteredAt resets all changes to the "registered_at" field.
-func (m *CarMutation) ResetRegisteredAt() {
-	m.registered_at = nil
-}
-
 // SetOwnerID sets the "owner" edge to the User entity by id.
 func (m *CarMutation) SetOwnerID(id int) {
 	m.owner = &id
@@ -290,12 +252,9 @@ func (m *CarMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CarMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 1)
 	if m.model != nil {
 		fields = append(fields, car.FieldModel)
-	}
-	if m.registered_at != nil {
-		fields = append(fields, car.FieldRegisteredAt)
 	}
 	return fields
 }
@@ -307,8 +266,6 @@ func (m *CarMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case car.FieldModel:
 		return m.Model()
-	case car.FieldRegisteredAt:
-		return m.RegisteredAt()
 	}
 	return nil, false
 }
@@ -320,8 +277,6 @@ func (m *CarMutation) OldField(ctx context.Context, name string) (ent.Value, err
 	switch name {
 	case car.FieldModel:
 		return m.OldModel(ctx)
-	case car.FieldRegisteredAt:
-		return m.OldRegisteredAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Car field %s", name)
 }
@@ -337,13 +292,6 @@ func (m *CarMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModel(v)
-		return nil
-	case car.FieldRegisteredAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRegisteredAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Car field %s", name)
@@ -396,9 +344,6 @@ func (m *CarMutation) ResetField(name string) error {
 	switch name {
 	case car.FieldModel:
 		m.ResetModel()
-		return nil
-	case car.FieldRegisteredAt:
-		m.ResetRegisteredAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Car field %s", name)

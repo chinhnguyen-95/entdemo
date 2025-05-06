@@ -7,7 +7,6 @@ import (
 	"entdemo/ent/user"
 	"fmt"
 	"strings"
-	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -20,8 +19,6 @@ type Car struct {
 	ID int `json:"id,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
-	// RegisteredAt holds the value of the "registered_at" field.
-	RegisteredAt time.Time `json:"registered_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CarQuery when eager-loading is set.
 	Edges        CarEdges `json:"edges"`
@@ -58,8 +55,6 @@ func (*Car) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case car.FieldModel:
 			values[i] = new(sql.NullString)
-		case car.FieldRegisteredAt:
-			values[i] = new(sql.NullTime)
 		case car.ForeignKeys[0]: // user_cars
 			values[i] = new(sql.NullInt64)
 		default:
@@ -88,12 +83,6 @@ func (c *Car) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field model", values[i])
 			} else if value.Valid {
 				c.Model = value.String
-			}
-		case car.FieldRegisteredAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field registered_at", values[i])
-			} else if value.Valid {
-				c.RegisteredAt = value.Time
 			}
 		case car.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -145,9 +134,6 @@ func (c *Car) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("model=")
 	builder.WriteString(c.Model)
-	builder.WriteString(", ")
-	builder.WriteString("registered_at=")
-	builder.WriteString(c.RegisteredAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
