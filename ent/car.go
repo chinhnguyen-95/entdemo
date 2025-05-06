@@ -19,7 +19,7 @@ type Car struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Model holds the value of the "model" field.
-	Model string `json:"model,omitempty"`
+	Model car.Model `json:"model,omitempty"`
 	// RegisteredAt holds the value of the "registered_at" field.
 	RegisteredAt time.Time `json:"registered_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -87,7 +87,7 @@ func (c *Car) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field model", values[i])
 			} else if value.Valid {
-				c.Model = value.String
+				c.Model = car.Model(value.String)
 			}
 		case car.FieldRegisteredAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -144,7 +144,7 @@ func (c *Car) String() string {
 	builder.WriteString("Car(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("model=")
-	builder.WriteString(c.Model)
+	builder.WriteString(fmt.Sprintf("%v", c.Model))
 	builder.WriteString(", ")
 	builder.WriteString("registered_at=")
 	builder.WriteString(c.RegisteredAt.Format(time.ANSIC))

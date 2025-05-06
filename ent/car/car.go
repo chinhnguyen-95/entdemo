@@ -3,6 +3,8 @@
 package car
 
 import (
+	"fmt"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -55,6 +57,32 @@ func ValidColumn(column string) bool {
 		}
 	}
 	return false
+}
+
+// Model defines the type for the "model" enum field.
+type Model string
+
+// ModelTOYOTA is the default value of the Model enum.
+const DefaultModel = ModelTOYOTA
+
+// Model values.
+const (
+	ModelHONDA  Model = "HONDA"
+	ModelTOYOTA Model = "TOYOTA"
+)
+
+func (m Model) String() string {
+	return string(m)
+}
+
+// ModelValidator is a validator for the "model" field enum values. It is called by the builders before save.
+func ModelValidator(m Model) error {
+	switch m {
+	case ModelHONDA, ModelTOYOTA:
+		return nil
+	default:
+		return fmt.Errorf("car: invalid enum value for model field: %q", m)
+	}
 }
 
 // OrderOption defines the ordering options for the Car queries.

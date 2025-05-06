@@ -37,7 +37,7 @@ type CarMutation struct {
 	op            Op
 	typ           string
 	id            *int
-	model         *string
+	model         *car.Model
 	registered_at *time.Time
 	clearedFields map[string]struct{}
 	owner         *int
@@ -146,12 +146,12 @@ func (m *CarMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetModel sets the "model" field.
-func (m *CarMutation) SetModel(s string) {
-	m.model = &s
+func (m *CarMutation) SetModel(c car.Model) {
+	m.model = &c
 }
 
 // Model returns the value of the "model" field in the mutation.
-func (m *CarMutation) Model() (r string, exists bool) {
+func (m *CarMutation) Model() (r car.Model, exists bool) {
 	v := m.model
 	if v == nil {
 		return
@@ -162,7 +162,7 @@ func (m *CarMutation) Model() (r string, exists bool) {
 // OldModel returns the old "model" field's value of the Car entity.
 // If the Car object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CarMutation) OldModel(ctx context.Context) (v string, err error) {
+func (m *CarMutation) OldModel(ctx context.Context) (v car.Model, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldModel is only allowed on UpdateOne operations")
 	}
@@ -332,7 +332,7 @@ func (m *CarMutation) OldField(ctx context.Context, name string) (ent.Value, err
 func (m *CarMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case car.FieldModel:
-		v, ok := value.(string)
+		v, ok := value.(car.Model)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
