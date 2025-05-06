@@ -1,0 +1,38 @@
+name: Atlas
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ci-atlas.yaml
+      - 'ent/migrate/migrations/*'
+  pull_request:
+    paths:
+      - 'ent/migrate/migrations/*'
+# Permissions to write comments on the pull request.
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  atlas:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ariga/setup-atlas@v0
+        with:
+          cloud-token: ${{ secrets.ATLAS_CLOUD_TOKEN_KQD2JH }}
+      - uses: ariga/atlas-action/migrate/lint@v1
+        with:
+          dir: 'file://ent/migrate/migrations'
+          dir-name: 'entdemo'
+          dev-url: 'sqlite://dev?mode=memory'
+      - uses: ariga/atlas-action/migrate/push@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          dir: 'file://ent/migrate/migrations'
+          dir-name: 'entdemo'
+          dev-url: 'sqlite://dev?mode=memory'
