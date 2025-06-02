@@ -42,7 +42,9 @@ jobs:
           cloud-token: ${{ secrets.ATLAS_CLOUD_TOKEN_8C0I5S }}
       - uses: ariga/atlas-action/migrate/lint@v1
         with:
-          dir: 'file://ent/migrate/migrations'
+          working-directory: ent/migrate
+          env: local
+          dir: 'file://migrations'
           dir-name: 'entdemo'
           dev-url: 'mysql://root:pass@localhost:3306/dev'
       - uses: ariga/atlas-action/migrate/push@v1
