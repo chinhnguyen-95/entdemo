@@ -64,6 +64,12 @@ func (uu *UserUpdate) SetNillableName(s *string) *UserUpdate {
 	return uu
 }
 
+// ClearName clears the value of the "name" field.
+func (uu *UserUpdate) ClearName() *UserUpdate {
+	uu.mutation.ClearName()
+	return uu
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by IDs.
 func (uu *UserUpdate) AddCarIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddCarIDs(ids...)
@@ -198,6 +204,9 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
+	}
+	if uu.mutation.NameCleared() {
+		_spec.ClearField(user.FieldName, field.TypeString)
 	}
 	if uu.mutation.CarsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -341,6 +350,12 @@ func (uuo *UserUpdateOne) SetNillableName(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetName(*s)
 	}
+	return uuo
+}
+
+// ClearName clears the value of the "name" field.
+func (uuo *UserUpdateOne) ClearName() *UserUpdateOne {
+	uuo.mutation.ClearName()
 	return uuo
 }
 
@@ -508,6 +523,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.Name(); ok {
 		_spec.SetField(user.FieldName, field.TypeString, value)
+	}
+	if uuo.mutation.NameCleared() {
+		_spec.ClearField(user.FieldName, field.TypeString)
 	}
 	if uuo.mutation.CarsCleared() {
 		edge := &sqlgraph.EdgeSpec{

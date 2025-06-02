@@ -33,6 +33,14 @@ func (uc *UserCreate) SetName(s string) *UserCreate {
 	return uc
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetName(*s)
+	}
+	return uc
+}
+
 // AddCarIDs adds the "cars" edge to the Car entity by IDs.
 func (uc *UserCreate) AddCarIDs(ids ...int) *UserCreate {
 	uc.mutation.AddCarIDs(ids...)
@@ -104,9 +112,6 @@ func (uc *UserCreate) check() error {
 		if err := user.AgeValidator(v); err != nil {
 			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "User.age": %w`, err)}
 		}
-	}
-	if _, ok := uc.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "User.name"`)}
 	}
 	return nil
 }
