@@ -62,8 +62,6 @@ func ValidColumn(column string) bool {
 var (
 	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
 	AgeValidator func(int) error
-	// DefaultName holds the default value on creation for the "name" field.
-	DefaultName string
 )
 
 // OrderOption defines the ordering options for the User queries.
