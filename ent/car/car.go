@@ -14,6 +14,8 @@ const (
 	FieldID = "id"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
+	// FieldColor holds the string denoting the color field in the database.
+	FieldColor = "color"
 	// FieldRegisteredAt holds the string denoting the registered_at field in the database.
 	FieldRegisteredAt = "registered_at"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
@@ -33,6 +35,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldModel,
+	FieldColor,
 	FieldRegisteredAt,
 }
 
@@ -68,6 +71,11 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByModel orders the results by the model field.
 func ByModel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldModel, opts...).ToFunc()
+}
+
+// ByColor orders the results by the color field.
+func ByColor(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldColor, opts...).ToFunc()
 }
 
 // ByRegisteredAt orders the results by the registered_at field.

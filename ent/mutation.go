@@ -38,6 +38,7 @@ type CarMutation struct {
 	typ           string
 	id            *int
 	model         *string
+	color         *string
 	registered_at *time.Time
 	clearedFields map[string]struct{}
 	owner         *int
@@ -181,6 +182,42 @@ func (m *CarMutation) ResetModel() {
 	m.model = nil
 }
 
+// SetColor sets the "color" field.
+func (m *CarMutation) SetColor(s string) {
+	m.color = &s
+}
+
+// Color returns the value of the "color" field in the mutation.
+func (m *CarMutation) Color() (r string, exists bool) {
+	v := m.color
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldColor returns the old "color" field's value of the Car entity.
+// If the Car object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CarMutation) OldColor(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldColor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldColor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldColor: %w", err)
+	}
+	return oldValue.Color, nil
+}
+
+// ResetColor resets all changes to the "color" field.
+func (m *CarMutation) ResetColor() {
+	m.color = nil
+}
+
 // SetRegisteredAt sets the "registered_at" field.
 func (m *CarMutation) SetRegisteredAt(t time.Time) {
 	m.registered_at = &t
@@ -290,9 +327,12 @@ func (m *CarMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CarMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.model != nil {
 		fields = append(fields, car.FieldModel)
+	}
+	if m.color != nil {
+		fields = append(fields, car.FieldColor)
 	}
 	if m.registered_at != nil {
 		fields = append(fields, car.FieldRegisteredAt)
@@ -307,6 +347,8 @@ func (m *CarMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case car.FieldModel:
 		return m.Model()
+	case car.FieldColor:
+		return m.Color()
 	case car.FieldRegisteredAt:
 		return m.RegisteredAt()
 	}
@@ -320,6 +362,8 @@ func (m *CarMutation) OldField(ctx context.Context, name string) (ent.Value, err
 	switch name {
 	case car.FieldModel:
 		return m.OldModel(ctx)
+	case car.FieldColor:
+		return m.OldColor(ctx)
 	case car.FieldRegisteredAt:
 		return m.OldRegisteredAt(ctx)
 	}
@@ -337,6 +381,13 @@ func (m *CarMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModel(v)
+		return nil
+	case car.FieldColor:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetColor(v)
 		return nil
 	case car.FieldRegisteredAt:
 		v, ok := value.(time.Time)
@@ -396,6 +447,9 @@ func (m *CarMutation) ResetField(name string) error {
 	switch name {
 	case car.FieldModel:
 		m.ResetModel()
+		return nil
+	case car.FieldColor:
+		m.ResetColor()
 		return nil
 	case car.FieldRegisteredAt:
 		m.ResetRegisteredAt()

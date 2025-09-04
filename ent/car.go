@@ -20,6 +20,8 @@ type Car struct {
 	ID int `json:"id,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
+	// Color holds the value of the "color" field.
+	Color string `json:"color,omitempty"`
 	// RegisteredAt holds the value of the "registered_at" field.
 	RegisteredAt time.Time `json:"registered_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -56,7 +58,7 @@ func (*Car) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case car.FieldID:
 			values[i] = new(sql.NullInt64)
-		case car.FieldModel:
+		case car.FieldModel, car.FieldColor:
 			values[i] = new(sql.NullString)
 		case car.FieldRegisteredAt:
 			values[i] = new(sql.NullTime)
@@ -88,6 +90,12 @@ func (c *Car) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field model", values[i])
 			} else if value.Valid {
 				c.Model = value.String
+			}
+		case car.FieldColor:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field color", values[i])
+			} else if value.Valid {
+				c.Color = value.String
 			}
 		case car.FieldRegisteredAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -145,6 +153,9 @@ func (c *Car) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
 	builder.WriteString("model=")
 	builder.WriteString(c.Model)
+	builder.WriteString(", ")
+	builder.WriteString("color=")
+	builder.WriteString(c.Color)
 	builder.WriteString(", ")
 	builder.WriteString("registered_at=")
 	builder.WriteString(c.RegisteredAt.Format(time.ANSIC))
