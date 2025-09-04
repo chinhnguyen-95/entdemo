@@ -43,6 +43,20 @@ func (cu *CarUpdate) SetNillableModel(s *string) *CarUpdate {
 	return cu
 }
 
+// SetColor sets the "color" field.
+func (cu *CarUpdate) SetColor(s string) *CarUpdate {
+	cu.mutation.SetColor(s)
+	return cu
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (cu *CarUpdate) SetNillableColor(s *string) *CarUpdate {
+	if s != nil {
+		cu.SetColor(*s)
+	}
+	return cu
+}
+
 // SetRegisteredAt sets the "registered_at" field.
 func (cu *CarUpdate) SetRegisteredAt(t time.Time) *CarUpdate {
 	cu.mutation.SetRegisteredAt(t)
@@ -126,6 +140,9 @@ func (cu *CarUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := cu.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
 	}
+	if value, ok := cu.mutation.Color(); ok {
+		_spec.SetField(car.FieldColor, field.TypeString, value)
+	}
 	if value, ok := cu.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
 	}
@@ -188,6 +205,20 @@ func (cuo *CarUpdateOne) SetModel(s string) *CarUpdateOne {
 func (cuo *CarUpdateOne) SetNillableModel(s *string) *CarUpdateOne {
 	if s != nil {
 		cuo.SetModel(*s)
+	}
+	return cuo
+}
+
+// SetColor sets the "color" field.
+func (cuo *CarUpdateOne) SetColor(s string) *CarUpdateOne {
+	cuo.mutation.SetColor(s)
+	return cuo
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (cuo *CarUpdateOne) SetNillableColor(s *string) *CarUpdateOne {
+	if s != nil {
+		cuo.SetColor(*s)
 	}
 	return cuo
 }
@@ -304,6 +335,9 @@ func (cuo *CarUpdateOne) sqlSave(ctx context.Context) (_node *Car, err error) {
 	}
 	if value, ok := cuo.mutation.Model(); ok {
 		_spec.SetField(car.FieldModel, field.TypeString, value)
+	}
+	if value, ok := cuo.mutation.Color(); ok {
+		_spec.SetField(car.FieldColor, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.RegisteredAt(); ok {
 		_spec.SetField(car.FieldRegisteredAt, field.TypeTime, value)
